@@ -1,0 +1,25 @@
+{
+  "name": "First PWA",
+  "short_name": "F PWA",
+  "start_url": "./index.html",
+  "theme_color": "#FFDF00",
+  "background_color": "#FFDF00",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "./res/ic_launcher_96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "./res/homescreen-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "./res/homescreen-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
