@@ -8,11 +8,14 @@
           caches.open(CACHE_NAME)
               .then(cache => cache.addAll([
                   './js/main.js',
+                  './js/zepto.min.js',
                   './css/weui.css',
                   './css/example.css',
                   './data/test.json',
                   './index.html',
                   'pages/404.html',
+                  'pages/failed.html',
+                  'pages/content.html',
                   "https://cdn.bootcss.com/weui/0.4.3/style/weui.css",
                   "https://fonts.googleapis.com/css?family=Raleway|Merriweather"
               ]))
@@ -53,7 +56,7 @@
                 })
                 .catch(error => {
                     console.log('Request failed:', error);
-                    //TODO You could return a custom offline 404 page here
+                    return caches.match('pages/failed.html');
                 });
     }
 

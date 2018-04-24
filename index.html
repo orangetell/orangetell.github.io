@@ -18,53 +18,61 @@
 </head>
 <body>
   <!-- latest news -->
-  <div id="content">
-
   <div class="weui-panel weui-panel_access">
-            <div class="weui-panel__hd">好一个列表</div>
-            <div class="weui-panel__bd" id="list">
-                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-                    <div class="weui-media-box__hd">
-                        <img class="weui-media-box__thumb" src="https://ss2.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3081047580,1465933197&fm=27&gp=0.jpg" alt="">
-                    </div>
-                    <div class="weui-media-box__bd">
-                        <h4 class="weui-media-box__title">标题一</h4>
-                        <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-                    </div>
-                </a>
-                <a href="javascript:void(0);" class="weui-media-box weui-media-box_appmsg">
-                    <div class="weui-media-box__hd">
-                        <img class="weui-media-box__thumb" src="https://ss2.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3081047580,1465933197&fm=27&gp=0.jpg" alt="">
-                    </div>
-                    <div class="weui-media-box__bd">
-                        <h4 class="weui-media-box__title">标题二</h4>
-                        <p class="weui-media-box__desc">由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。</p>
-                    </div>
-                </a>
-            </div>
-            <div class="weui-panel__ft">
-                <a href="./pages/nopage.html" class="weui-cell weui-cell_access weui-cell_link">
-                    <div class="weui-cell__bd">查看更多</div>
-                    <span class="weui-cell__ft"></span>
-                </a>    
-            </div>
-        </div>
+      <div class="weui-panel__hd">好一个列表</div>
+      <div class="weui-panel__bd" id="list">
+          <p>加载中...</p>
+      </div>
+      <div class="weui-panel__ft">
+          <a href="./pages/nopage.html" class="weui-cell weui-cell_access weui-cell_link">
+              <div class="weui-cell__bd">查看更多</div>
+              <span class="weui-cell__ft"></span>
+          </a>    
+      </div>
+  </div>
 
-                </div>
-
-  <hr>
+  <div id="toast" style="opacity: 0; display: none;">
+      <div class="weui-mask_transparent"></div>
+      <div class="weui-toast">
+          <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+          <p class="weui-toast__content">注册SW成功</p>
+      </div>
+  </div>
   <!-- javaScript -->
   <script async src="./js/main.js"></script>
+
+   <script src="./js/zepto.min.js"></script>
   <script>
+  function registerSW(result, time) {
+      var $toast = $('#toast');
+      if (result == 1) {
+          $('#toast_s p').html("注册SW成功")
+      } else if (result == 0) {
+          $('#toast_s p').html("注册SW失败")
+      } else {
+           $('#toast_s p').html("不支持SW")
+      }
+      $toast.fadeIn(100);
+      setTimeout(function () {
+          $toast.fadeOut(100);
+      }, time);
+  }
+
   // Register the service worker
   if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').then(function(registration) {
-        // Registration was successful
+      navigator.serviceWorker.register('./sw.js').then(fregistration => {
+          // Registration was successful
+          registerSw(1, 2000);
+      }).catch(error => {
+          registerSw(0, 2000);
       });
+  } else {
+      registerSw(-1, 5000);
   }
   window.onload = function() {
       app.loadHomeData();
   }
   </script>
+
 </body>
 </html>
