@@ -8,6 +8,7 @@ var app = (function(){
 
     function logError(error) {
         console.log('Looks like there was a problem: \n', error);
+        return false;
     }
 
     function fechJsonData(url) {
@@ -24,14 +25,13 @@ var app = (function(){
             .then(json => {
                 return json;
             })
-            .catch(logError);
+            .catch(logError)
     }
 
-    // Load the latest news data and populate content
     function loadHomeData() {
         fechJsonData('data/test.json').then(result => {
             if (!result || !result.data || result.data.length < 1) {
-                return;
+                return false;
             }
             var list = "";
             for (var i = 0; i < result.data.length; i++) {
@@ -42,6 +42,15 @@ var app = (function(){
                             + '</a>';
             }
             document.getElementById('list').innerHTML = list;
+            setElementVisibility('loading', false);
+            setElementVisibility('content', true);
+            return true;
+        }).then(success => {
+            if (!success) {
+                setElementVisibility('loading', true);
+                setElementVisibility('content', false);
+                document.getElementById('loading').innerHTML = "<p>加载失败</p>";
+            }
         });
     }
 
@@ -61,12 +70,10 @@ var app = (function(){
             var content = '<article class="weui-article">' + '<h1>' + data.title +'</h1>'
                             + '<section><section><p>' + '<img src="' + data.img + '" alt="">' + '</p></section>'
                             + '<section><p>' + data.content + '</p><section></sectioin></article>';
-            // Update the DOM with the data
             document.getElementById('content').innerHTML = content;
         });
     }
-
-    // Get a value from the querystring
+    
     function findGetParameter(parameterName) {
         var result = null;
         var tmp = [];
@@ -76,6 +83,15 @@ var app = (function(){
             if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
         }
         return result;
+    }
+
+    function setElementVisibility(id, visible) {
+        var element = document.getElementById(id);
+        if (visible) {
+            element.style.display="visible";
+        } else {
+            element.style.display="none";
+        }
     }
 
     return {

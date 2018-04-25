@@ -16,18 +16,20 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="./manifest.json">
 </head>
-<body>
-  <!-- latest news -->
-  <div class="weui-panel weui-panel_access">
-      <div class="weui-panel__hd">好一个列表</div>
-      <div class="weui-panel__bd" id="list">
-          <p>加载中...</p>
-      </div>
-      <div class="weui-panel__ft">
-          <a href="./pages/nopage.html" class="weui-cell weui-cell_access weui-cell_link">
-              <div class="weui-cell__bd">查看更多</div>
-              <span class="weui-cell__ft"></span>
-          </a>    
+  <div id="loading" style="display: visible;">
+      <p>加载中...</p>
+  </div>
+  <div id="content"  style="display: hidden;">
+      <div class="weui-panel weui-panel_access">
+          <div class="weui-panel__hd">好一个列表</div>
+          <div class="weui-panel__bd" id="list">
+          </div>
+          <div class="weui-panel__ft">
+              <a href="./pages/nopage.html" class="weui-cell weui-cell_access weui-cell_link">
+                  <div class="weui-cell__bd">查看更多</div>
+                  <span class="weui-cell__ft"></span>
+              </a>    
+          </div>
       </div>
   </div>
 
@@ -40,38 +42,36 @@
   </div>
   <!-- javaScript -->
   <script async src="./js/main.js"></script>
-
-   <script src="./js/zepto.min.js"></script>
+  <script src="./js/zepto.min.js"></script>
   <script>
-  function registerSW(result, time) {
-      var $toast = $('#toast');
-      if (result == 1) {
-          $('#toast_s p').html("注册SW成功")
-      } else if (result == 0) {
-          $('#toast_s p').html("注册SW失败")
-      } else {
-           $('#toast_s p').html("不支持SW")
+      function showResult(result, time) {
+          var $toast = $('#toast');
+          if (result == 1) {
+              $('#toast_s p').html("注册SW成功")
+          } else if (result == 0) {
+              $('#toast_s p').html("注册SW失败")
+          } else {
+               $('#toast_s p').html("不支持SW")
+          }
+          $toast.fadeIn(100);
+          setTimeout(function () {
+              $toast.fadeOut(100);
+          }, time);
       }
-      $toast.fadeIn(100);
-      setTimeout(function () {
-          $toast.fadeOut(100);
-      }, time);
-  }
-
-  // Register the service worker
-  if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').then(fregistration => {
-          // Registration was successful
-          registerSw(1, 2000);
-      }).catch(error => {
-          registerSw(0, 2000);
-      });
-  } else {
-      registerSw(-1, 5000);
-  }
-  window.onload = function() {
-      app.loadHomeData();
-  }
+      // Register the service worker
+      if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('./sw.js').then(fregistration => {
+              // Registration was successful
+              showResult(1, 2000);
+          }).catch(error => {
+              showResult(0, 2000);
+          });
+      } else {
+          showResult(-1, 5000);
+      }
+      window.onload = function() {
+          app.loadHomeData();
+      }
   </script>
 
 </body>
