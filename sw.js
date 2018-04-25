@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    var CACHE_NAME = 'cache-v2';
+    var CACHE_NAME = 'cache-v3';
 
     //首次注册，或者是sw.js有更新，重新打开网页后，install事件会被触发，类似于application.onCreate
     self.addEventListener('install', event => {
@@ -25,15 +25,15 @@
 
     //当sw.js有更新，网页关闭或者重新打开后，activate会被触发，类似于activity.onCreate
     self.addEventListener('activate', function(event) {
-        var oldCacheList = ['cache-v1'];
         event.waitUntil(
             // 遍历caches所有缓存
             caches.keys().then(cacheNames => {
                 return Promise.all(
-                    cacheNames.map(function(cacheName) {
-                        if (oldCacheList.includes(cacheName)) {
+                    cacheNames.map(item => {
+                        console.log("wenjun item: " + item + ", " + (item != CACHE_NAME));
+                        if (item != CACHE_NAME) {
                             // 删除失效的缓存文件
-                            return caches.delete(cacheName);
+                            return caches.delete(item);
                         }
                     })
                 );
