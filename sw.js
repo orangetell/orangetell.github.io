@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    var CACHE_NAME = 'cache-v3';
+    var CACHE_NAME = 'cache-v4';
 
     //首次注册，或者是sw.js有更新，重新打开网页后，install事件会被触发，类似于application.onCreate
     self.addEventListener('install', event => {
@@ -20,23 +20,31 @@
                 "https://cdn.bootcss.com/weui/0.4.3/style/weui.css",
                 "https://fonts.googleapis.com/css?family=Raleway|Merriweather"
             ]))
+            .then(() => {
+                // Force the SW to transition from installing -> active state，保证缓存及时更新
+                return self.skipWaiting();
+            })
         );
     });
 
     //当sw.js有更新，网页关闭或者重新打开后，activate会被触发，类似于activity.onCreate
     self.addEventListener('activate', function(event) {
+        var cacheWhitelist = [CACHE_NAME];
+
         event.waitUntil(
-            // 遍历caches所有缓存
-            caches.keys().then(cacheNames => {
+            // 遍历所有缓存
+            caches.keys().then(function(cacheNames) {
                 return Promise.all(
-                    cacheNames.map(item => {
-                        console.log("wenjun item: " + item + ", " + (item != CACHE_NAME));
-                        if (item != CACHE_NAME) {
+                    cacheNames.map(function(cacheName) {
+                        if (cacheWhitelist.indexOf(cacheName) === -1) {
                             // 删除失效的缓存文件
-                            return caches.delete(item);
+                            return caches.delete(cacheName);
                         }
                     })
                 );
+            }).then(() => {
+                //保证之后打开页面都会使用版本更新的缓存，旧的sw会停止工作
+                return self.clients.claim();
             })
         );
     });
